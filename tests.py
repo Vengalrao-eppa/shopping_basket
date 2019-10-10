@@ -3,7 +3,7 @@ import os
 import unittest
 from cart import Cart, CartItem
 from product import ProductStore, NoSuchProductError
-from offers import NoOffer, MultiBuyOffer, DependentDiscountOffer
+from offers import MultiBuyOffer, DependentDiscountOffer
 
 
 class CartTest(unittest.TestCase):
@@ -189,45 +189,16 @@ class ProductStoreTest(unittest.TestCase):
     def test_init_from_filepath(self):
         '''ProductStore object can be created from json file.'''
         json_file = os.path.abspath('test_products.json')
-        product_store = ProductStore.init_from_filepath(json_file)
+        product_store = ProductStore.load_products(json_file)
         self.assertEqual(len(product_store.items), 4)
 
-    def test_item_after_init_from_filepath(self):
+    def test_item_after_load_products(self):
         '''An item's price can be retrieved from a ProductStore that's been
         created from a json file.'''
         json_file = os.path.abspath('test_products.json')
-        product_store = ProductStore.init_from_filepath(json_file)
+        product_store = ProductStore.load_products(json_file)
         self.assertEqual(
             product_store.get_product_price('apple'), float('0.15'))
-
-
-class NoOfferTest(unittest.TestCase):
-
-    '''Tests for the NoOffer offer class.'''
-
-    def _create_product_store(self):
-        '''Helper method to create populated ProductStore.'''
-        products = [
-            {"name": "apple" ,"price": 0.15},
-            {"name": "ice cream" ,"price": 3.49},
-            {"name": "dairy milk" ,"price": 2.00},
-            {"name": "kitkat" ,"price": 0.70}
-            ]
-        return ProductStore(products)
-
-    def test_nooffer_target(self):
-        '''NoOffer's target is correctly assigned.'''
-        no_offer_kitkat = NoOffer('kitkat')
-        self.assertEqual(no_offer_kitkat.target_product, 'kitkat')
-
-    def test_nooffer_total(self):
-        '''NoOffer's calculate_line_total returns same value as cart item line
-        total.'''
-        product_store = self._create_product_store()
-        no_offer_kitkat = NoOffer('kitkat')
-        cartitem = CartItem('kitkat')
-        self.assertEqual(cartitem.get_line_total(
-            product_store), no_offer_kitkat.calculate_line_total(cartitem, product_store))
 
 
 class BogofOfferTest(unittest.TestCase):
