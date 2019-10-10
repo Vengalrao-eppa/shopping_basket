@@ -22,21 +22,17 @@ product_store = ProductStore(products)
 
 # or
 
-import os
-
-json_path = os.path.abspath('products.json')
-product_store = ProductStore.init_from_filepath(json_path)
+product_store = ProductStore.load_products(json_products_file)
 ```
 
-`get_product_price()` - Returns the price of the product
-
+`get_product_price()` to get the product price
 ```python
 price = product_store.get_product_price('product')
 ```
 
 ## Cart
 
-Carts should be created with a ProductStore instance from which the cart can derive prices.
+Carts can be created by passing the ProductStore Instance as an argument
 
 ```python
 from cart import Cart
@@ -47,11 +43,12 @@ my_cart = Cart(product_store)
 Products can be added to a cart by name
 
 ```python
-cart.add('apple')
-cart.add('strawberries', 3)
+cart.add('Biscuits')
+cart.add('Sardines', 3)
 ```
 
-The total for the cart can be calculated with `get_total()`. This method optionally takes a list of [Offer](#offers) objects that are applied to items in the cart when calculating the total.
+`get_total()` to get the cart total
+Also a list of Offer Class objects can be passed to the method to apply offers on Cart total
 
 ```python
 total = cart.get_total()
@@ -82,7 +79,12 @@ multibuy = MultiBuyOffer(product, 2, 1)
 ### DependentDiscountOffer
 
 Discount can be applied to a product on purchase of another product.
+Discount can also be applied on a single product 
 
 ```python
 dep_discount_offer = DependentDiscountOffer('snickers bar', 'mars bar', Decimal('0.2'))
+discount_product = DependentDiscountOffer('snickers bar', 'snickers bar', Decimal('0.2'))
 ```
+
+To run unittest cases for the shopping cart, run the below command from command prompt
+``` python -m unittest tests.py ```
